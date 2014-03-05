@@ -1,0 +1,1 @@
+(defn test [numbers] (read-string (apply str numbers)))
