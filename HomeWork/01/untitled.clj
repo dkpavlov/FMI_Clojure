@@ -12,9 +12,9 @@
 
 (digits)
 
-(defn primefactors
+(defn prime-factors
   ([n]
-    (primefactors n 2 '()))
+    (prime-factors n 2 '()))
   ([n candidate acc]
     (cond (<= n 1) (vec (reverse acc))
           (zero? (rem n candidate)) (recur (/ n candidate) candidate (cons candidate acc))
