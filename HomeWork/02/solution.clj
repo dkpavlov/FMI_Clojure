@@ -1,3 +1,9 @@
+
+(def tt (str [:and {:genre "Jazz"} [:not {:title "My Favourite Things"}] [:or {:tag :popular} {:tag :bebop}]]))
+
+(read-string
+ (clojure.string/replace tt #"\{|\}|\[|\]|:and|:not|:or" {"{" "(test l {" "}" "})" "[" "(" "]" ")" ":and" "and" ":not" "not" ":or" "or"}))
+
 (use `clojure.string)
 
 (def test1 [:stuf-string :genre-string :artist-string :title-string])
@@ -31,7 +37,7 @@
                  nil)
      :tags (if (not (nil? (x :stuf-string)))
              (for [xs (split (str (x :genre-string) ", " (x :stuf-string)) #",\s")]
-               (keyword  (lower-case xs))))}))
+               (lower-case xs)))}))
 
 
 
@@ -45,8 +51,15 @@
                               Toccata e Fuga.               Bach.               Classical, Baroque.
                               Eine Kleine Nachtmusik.       Mozart.             Classical.          violin, fancy"))
 
+(defn search [collection serch-for criteria]
+  (for [x collection]
+    (if (= (x )))))
+
 (zipmap [:a :b :c] ["a" "b"])
 
 (.indexOf "a, b" ", ")
 
 (split "ab" #",\s")
+
+
+
