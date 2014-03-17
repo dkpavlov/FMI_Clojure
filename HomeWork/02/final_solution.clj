@@ -8,7 +8,11 @@
 
 (defn super-split [xs]
   (for [line (split-lines xs)]
-    (zipmap super-split-keys (split (trim line) #"(\s\s+)|(0\s*)|(\.\s*)"))))
+    (zipmap super-split-keys (-> line
+                                 trim
+                                 (split #"(\s\s+)|(0\s*)|(\.\s*)")))))
+
+
 
 (defn generate-collection [super-list]
   (for [x super-list]
@@ -26,7 +30,11 @@
                (keyword (lower-case xs)))))}))
 
 (defn make-collection [xs]
-  (generate-collection (super-split xs)))
+  (-> xs
+    super-split
+    generate-collection))
+
+
 
 (defn line-serch [line criteria]
    (every? identity
@@ -38,20 +46,35 @@
         :else (= (line (get c 0)) (get c 1)))))))
 
 
+(defn build [x]
+  (->> x
+     (filter identity)
+     (apply hash-set)))
+
+
+
+(defn eval-str [criteria x]
+  (-> (replace (replace (str criteria) reg replace-map) #":TOD" (str x))
+    read-string
+    eval))
+
+
 (defn search [collection serch-for criteria]
-   (apply hash-set
-          (filter identity
+   (build
+     (if (= serch-for :tags)
+       (apply concat
+              (for [x collection]
+                (when (eval-str criteria x)
                   (if (= serch-for :tags)
-                    (apply concat (for [x collection]
-                                  (when (eval (read-string (clojure.string/replace (clojure.string/replace (str criteria) reg replace-map) #":TOD" (str x))))
-                                    (if (= serch-for :tags)
-                                      (for [i (x :tags)] i)
-                                      (x serch-for)))))
-                    (for [x collection]
-                                  (when (eval (read-string (clojure.string/replace (clojure.string/replace (str criteria) reg replace-map) #":TOD" (str x))))
-                                    (if (= serch-for :tags)
-                                      (for [i (x :tags)] i)
-                                      (x serch-for))))))))
+                    (for [i (x :tags)] i)
+                    (x serch-for)))))
+       (for [x collection]
+         (when (eval-str criteria x)
+           (if (= serch-for :tags)
+             (for [i (x :tags)] i)
+             (x serch-for)))))))
+
+
 
 
 
