@@ -82,8 +82,6 @@
 
 (use 'clojure.test)
 
-(load-file "solution.clj")
-
 (def songs-text2
 "My Favourite Things. John Coltrane. Jazz, Bebop. popular, cover
 Alabama. John Coltrane. Jazz, Avantgarde.
