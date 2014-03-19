@@ -1,16 +1,25 @@
 (use `clojure.string)
 
-(def super-split-keys [:title-string :artist-string :genre-string :stuf-string])
+(def super-split-keys [:title-string
+                       :artist-string
+                       :genre-string
+                       :stuf-string])
 
 (def reg #"\{|\}|\[|\]|:and|:not|:or")
 
-(def replace-map {"{" "(line-serch :TOD {" "}" "})" "[" "(" "]" ")" ":and" "and" ":not" "not" ":or" "or"})
+(def replace-map {"{" "(line-serch :TOD {"
+                  "}" "})"
+                  "[" "("
+                  "]" ")"
+                  ":and" "and"
+                  ":not" "not"
+                  ":or" "or"})
 
 (defn super-split [xs]
   (for [line (split-lines xs)]
     (zipmap super-split-keys (-> line
                                  trim
-                                 (split #"(\s\s+)|(0\s*)|(\.\s*)")))))
+                                 (split #"(\s\s+)|(\.\s*)")))))
 
 
 
@@ -38,12 +47,18 @@
 
 (defn line-serch [line criteria]
    (every? identity
-     (vec (for [c criteria]
-       (cond
-        (= (get c 0) :tag)
-         (if (<= 1 (count (filter #{(get c 1)} (line :tags))))
+     (vec
+      (for [c criteria]
+       (let [k (get c 0)
+             v (get c 1)]
+         (cond
+
+          (= k :tag)
+          (if (<= 1 (count (filter #{v} (line :tags))))
            true)
-        :else (= (line (get c 0)) (get c 1)))))))
+
+          :else
+          (= (line k) v)))))))
 
 
 (defn build [x]
@@ -55,8 +70,8 @@
 
 (defn eval-str [criteria x]
   (-> (replace (replace (str criteria) reg replace-map) #":TOD" (str x))
-    read-string
-    eval))
+      read-string
+      eval))
 
 
 (defn search [collection serch-for criteria]
@@ -75,14 +90,7 @@
              (x serch-for)))))))
 
 
-
-
-
-
-
 (use 'clojure.test)
-
-(load-file "solution.clj")
 
 (def songs-text2
 "My Favourite Things. John Coltrane. Jazz, Bebop. popular, cover
