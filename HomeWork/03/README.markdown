@@ -14,6 +14,6 @@ If snake direction is **:left** and we tur to **:right**,
 
 ##Danger
 
-Needs work, not final version.
+Sort of finished?!/ :)
 
 
